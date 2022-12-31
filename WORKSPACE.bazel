@@ -15,10 +15,10 @@ http_archive(
 )
 
 http_archive(
-  name = "imgui",
+  name = "dear_imgui",
   urls = [
     "https://github.com/ocornut/imgui/archive/refs/tags/v1.89.1.zip"],
   strip_prefix = "imgui-1.89.1",
   sha256 = "6813982f9b48e79da93e8c6bf9afeb806eeeaaccc1a84588e3ece64fa0a15824",
-  build_file = "@//lib:imgui.BUILD",
+  build_file = "@//lib:dear_imgui.BUILD",
 )

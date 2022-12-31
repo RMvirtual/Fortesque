@@ -6,6 +6,6 @@ cc_test(
     srcs = glob(["*.h", "*.cpp"]),
     deps = [
         "@googletest//:gtest_main",
-        "@imgui//:imgui"
-    ]
+        "@dear_imgui//:main"
+    ],
 )
