@@ -1,4 +1,3 @@
-cls
-@echo off
+CLS
+@ECHO OFF
 bazel test --test_output=all --test_summary=detailed //...
-@echo on

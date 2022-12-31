@@ -1,1 +1,3 @@
+@ECHO OFF
+CLS
 bazel test --test_output=all --test_summary=detailed //...
