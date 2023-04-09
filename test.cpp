@@ -100,11 +100,16 @@ int main()
 
     // Setup vertex data (and buffers) and configure vertex attributes.
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f, // left  
-         0.5f, -0.5f, 0.0f, // right 
-         0.0f,  0.5f, 0.0f  // top   
+        -0.9f, -0.9f, 0.0f, // left  
+         0.1f, -0.9f, 0.0f, // right 
+        -0.4f,  0.1f, 0.0f, // top
+         0.1f, -0.9f, 0.0f, // left  
+         0.9f, -0.9f, 0.0f, // right 
+         0.45f,  0.1f, 0.0f  // top
+
     };
 
+    // Vertex array object, vertex buffer object.
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -152,7 +157,7 @@ int main()
         // there's no need to bind it every time, but we'll do so to
         // keep things a bit more organized
         
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
         // glBindVertexArray(0); // no need to unbind it every time 
 		
 		// Check and call events and swap buffers.
