@@ -1,0 +1,38 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+        "C_Cpp.files.exclude": {
+            "**/.vscode": true,
+            "**/.vs": true,
+            "**/build": true,
+            "**/devenv": true
+        },
+		"git.inputValidationLength": 150,
+		"powershell.integratedConsole.showOnStartup": false,
+		"C_Cpp.default.includePath": [
+			"src"
+		],
+		"files.associations": {
+			"array": "cpp",
+			"bitset": "cpp",
+			"chrono": "cpp",
+			"deque": "cpp",
+			"iterator": "cpp",
+			"map": "cpp",
+			"memory": "cpp",
+			"ranges": "cpp",
+			"regex": "cpp",
+			"span": "cpp",
+			"stacktrace": "cpp",
+			"unordered_map": "cpp",
+			"valarray": "cpp",
+			"vector": "cpp",
+			"xstring": "cpp",
+			"xutility": "cpp"
+		},
+	}
+}

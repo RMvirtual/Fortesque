@@ -1,0 +1,1 @@
+& "$env:DEVENV\build\release\main.exe"
