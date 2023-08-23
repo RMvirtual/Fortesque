@@ -16,7 +16,8 @@ if (Test-Path $extractedZip) {
 Invoke-WebRequest -Uri $url -OutFile $zipFile
 Expand-Archive -Path $zipFile -DestinationPath $DEVENV
 
-Rename-Item $extractedZip $TARGET
+Rename-Item $extractedZip $TARGET > $null
+Remove-Item $zipFile > $null
 
 # Compile.
 Push-Location $TARGET

@@ -14,7 +14,9 @@
 		"git.inputValidationLength": 150,
 		"powershell.integratedConsole.showOnStartup": false,
 		"C_Cpp.default.includePath": [
-			"src"
+			"src",
+			"devenv/glfw/include",
+			"devenv/glad/include",
 		],
 		"files.associations": {
 			"array": "cpp",
