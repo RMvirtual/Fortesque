@@ -1,10 +1,9 @@
 $BUILD = "$env:DEVENV\build"
+$DEV_LIBS = "$env:DEVENV\devenv"
 $RELEASE = "$BUILD\release"
 $TESTS = "$BUILD\tests"
 $SRC = "$env:DEVENV\src"
 $TEST_SRC = "$env:DEVENV\tests"
-$GOOGLETEST = "$env:DEVENV\devenv\GOOGLETEST"
-$DEV_LIBS = "$env:DEVENV\devenv"
 
 
 if (-Not (Test-Path $BUILD)) {New-Item $BUILD -ItemType Directory > $null}
@@ -13,12 +12,12 @@ if (-Not (Test-Path $BUILD)) {New-Item $BUILD -ItemType Directory > $null}
 if (Test-Path $RELEASE) {Remove-Item $RELEASE -Recurse -Force > $null}
 New-Item $RELEASE -ItemType Directory > $null
 
-# Object file?
+$GLAD = "$DEV_LIBS\glad"
+$GLFW = "$DEV_LIBS\glfw"
+
 g++.exe -o "$RELEASE\main.exe" `
-    "$SRC\fortesque.cpp" "$DEV_LIBS\glad\src\glad.c" `
-    -I"$DEV_LIBS\glad\include" `
-    -I"$DEV_LIBS\glfw\include" `
-    -L"$DEV_LIBS\glfw\lib-mingw-w64" `
+    "$SRC\fortesque.cpp" "$GLAD\src\glad.c" `
+    -I"$GLAD\include" -I"$GLFW\include" -L"$GLFW\lib-mingw-w64" `
     -lglfw3 -ldl -lgdi32 -luser32 `
     -mwindows -std=c++17
 
@@ -28,6 +27,8 @@ Write-Host "Building tests."
 
 if (Test-Path $TESTS) {Remove-Item $TESTS -Recurse -Force > $null}
 New-Item $TESTS -ItemType Directory > $null
+
+$GOOGLETEST = "$DEV_LIBS\GOOGLETEST"
 
 $gtestIncludes = "$GOOGLETEST\googletest\include"
 $gtestObject = "$GOOGLETEST\gtest-all.o"
