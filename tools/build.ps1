@@ -1,10 +1,10 @@
 $BUILD = "$env:DEVENV\build"
 $RELEASE = "$BUILD\release"
-$DEBUG = "$BUILD\debug"
 $TESTS = "$BUILD\tests"
 $SRC = "$env:DEVENV\src"
 $TEST_SRC = "$env:DEVENV\tests"
 $GOOGLETEST = "$env:DEVENV\devenv\GOOGLETEST"
+$DEV_LIBS = "$env:DEVENV\devenv"
 
 
 if (-Not (Test-Path $BUILD)) {New-Item $BUILD -ItemType Directory > $null}
@@ -13,15 +13,16 @@ if (-Not (Test-Path $BUILD)) {New-Item $BUILD -ItemType Directory > $null}
 if (Test-Path $RELEASE) {Remove-Item $RELEASE -Recurse -Force > $null}
 New-Item $RELEASE -ItemType Directory > $null
 
+# Object file?
 g++.exe -o "$RELEASE\main.exe" `
-    "$SRC\main.cpp" "$SRC\draw.cpp" `
-    -std=c++17 -mwindows -luser32 -lgdi32
-    
-# Debug folder.
-if (-Not (Test-Path $DEBUG)) {
-    New-Item $DEBUG -ItemType Directory > $null
-}
+    "$SRC\fortesque.cpp" "$DEV_LIBS\glad\src\glad.c" `
+    -I"$DEV_LIBS\glad\include" `
+    -I"$DEV_LIBS\glfw\include" `
+    -L"$DEV_LIBS\glfw\lib-mingw-w64" `
+    -lglfw3 -ldl -lgdi32 -luser32 `
+    -mwindows -std=c++17
 
+<#
 # Tests.
 Write-Host "Building tests."
 
@@ -36,3 +37,4 @@ g++.exe -o $testExecutable `
     -std=c++17 -isystem $gtestIncludes -pthread  -I"$SRC" `
     "$TEST_SRC\test_runner.cpp" "$TEST_SRC\maths\test_vector.cpp" `
     "$SRC\maths\vector.cpp"$gtestObject 
+#>

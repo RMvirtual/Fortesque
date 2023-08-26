@@ -91,7 +91,6 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Render the triangle.
-
         ourShader.use();
         float offset = 0.5f;
         ourShader.setFloat("xOffset", offset);
