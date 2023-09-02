@@ -17,7 +17,8 @@ $GLFW = "$DEV_LIBS\glfw"
 
 g++.exe -o "$RELEASE\main.exe" `
     "$SRC\fortesque.cpp" "$GLAD\src\glad.c" `
-    -I"$GLAD\include" -I"$GLFW\include" -L"$GLFW\lib-mingw-w64" `
+    -I"$GLAD\include" -I"$GLFW\include" -I"$SRC" `
+    -L"$GLFW\lib-mingw-w64" `
     -lglfw3 -ldl -lgdi32 -luser32 `
     -mwindows -std=c++17
 

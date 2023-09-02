@@ -1,0 +1,5 @@
+{
+    "powershell.buttons.showRunButtons": false,
+    "powershell.integratedConsole.showOnStartup": false,
+    "powershell.startAutomatically": false
+}
