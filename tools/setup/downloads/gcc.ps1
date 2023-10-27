@@ -1,5 +1,5 @@
 $TARGET = "$env:DEVENV\devenv"
-$ZIP_FILE = "$env:DEVENV\mingw64.zip"
+$ZIP_FILE = "$env:DEVENV\devenv\mingw64.zip"
 
 $URL = "https://github.com/brechtsanders/winlibs_mingw/" `
     + "releases/download/13.2.0-16.0.6-11.0.0-ucrt-r1/" `
