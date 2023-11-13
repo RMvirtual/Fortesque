@@ -2,7 +2,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "fortesque.h"
-
+#include <math.h>
 
 const unsigned int SCREEN_WIDTH = 800;
 const unsigned int SCREEN_HEIGHT = 600;
@@ -18,10 +18,10 @@ const char *vertexShaderSource = "#version 330 core\n"
 
 const char *fragmentShaderSource = "#version 330 core\n"
     "out vec4 FragColor;\n"
-    "in vec4 vertexColor;\n"
+    "uniform vec4 ourColor;\n"
     "void main()\n"
     "{\n"
-    "   FragColor = vertexColor;\n"
+    "   FragColor = ourColor;\n"
     "}\n\0";
 
 
@@ -169,11 +169,20 @@ int main()
         // Draw our first triangle
         glUseProgram(shaderProgram);
         
+        // Update uniform colour.
+        float timeValue = glfwGetTime();
+        float greenIntensity = sin(timeValue) / 2.0f + 0.5f;
+        int vertexColorLocation = glGetUniformLocation(
+            shaderProgram, "ourColor");
+        glUniform4f(vertexColorLocation, 0.0f, greenIntensity, 0.0f, 1.0f);
+
         // Seeing as we only have a single VAO there's no need to bind
         // it every time, but we'll do so to keep things a bit more
         // organized.
         glBindVertexArray(VAO); 
         glDrawArrays(GL_TRIANGLES, 0, 3);
+        
+        // Hmm...
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         // glBindVertexArray(0); // no need to unbind it every time 
