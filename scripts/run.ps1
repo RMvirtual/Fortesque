@@ -9,6 +9,7 @@ $TOOLS = "$env:DEVENV\tools"
 
 if ($debugMode) {
     Clear-Host; Write-Host "Debugging application."
+    
     Push-Location $env:DEVENV
     Start-Process gdb "$env:DEVENV\build\debug\main.exe"
     Pop-Location
@@ -16,6 +17,7 @@ if ($debugMode) {
 
 else {
     Clear-Host; Write-Host "Running application."
+
     Push-Location "$env:DEVENV\build\release"
     & "$env:DEVENV\build\release\main.exe"
     Pop-Location
