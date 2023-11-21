@@ -17,7 +17,7 @@ $GLAD = "$DEV_LIBS\glad"
 $GLFW = "$DEV_LIBS\glfw"
 
 g++.exe -o "$RELEASE\main.exe" `
-    "$SRC\fortesque.cpp" "$GLAD\src\glad.c" `
+    "$SRC\fortesque.cpp" "$SRC\shader.cpp" "$GLAD\src\glad.c" `
     -I"$GLAD\include" -I"$GLFW\include" -I"$SRC" `
     -L"$GLFW\lib-mingw-w64" `
     -lglfw3 -ldl -lgdi32 -luser32 `
@@ -32,7 +32,7 @@ if (Test-Path $DEBUG) {Remove-Item $DEBUG -Recurse -Force > $null}
 New-Item $DEBUG -ItemType Directory > $null
     
 g++.exe -o "$DEBUG\main.exe" `
-    "$SRC\fortesque.cpp" "$GLAD\src\glad.c" `
+    "$SRC\fortesque.cpp" "$SRC\shader.cpp" "$GLAD\src\glad.c" `
     -I"$GLAD\include" -I"$GLFW\include" -I"$SRC" `
     -L"$GLFW\lib-mingw-w64" `
     -lglfw3 -ldl -lgdi32 -luser32 `
