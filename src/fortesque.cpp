@@ -10,6 +10,8 @@ const unsigned int SCREEN_WIDTH = 800;
 const unsigned int SCREEN_HEIGHT = 600;
 
 
+// Issue drawing triangle colours from file.
+// Appears to not be pulling through.
 int main()
 {
     std::cout << "Starting program." << std::endl;
