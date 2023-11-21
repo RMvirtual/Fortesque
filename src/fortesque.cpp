@@ -1,9 +1,8 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#include "shader.h"
-#include "fortesque.h"
 #include <iostream>
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
+#include "fortesque.h"
+#include "shader.h"
 
 
 // Global settings.
