@@ -16,5 +16,7 @@ if ($debugMode) {
 
 else {
     Clear-Host; Write-Host "Running application."
-    Start-Process "$env:DEVENV\build\release\main.exe" > $null
+    Push-Location "$env:DEVENV\build\release"
+    & "$env:DEVENV\build\release\main.exe"
+    Pop-Location
 }
