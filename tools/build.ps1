@@ -22,6 +22,10 @@ g++.exe -o "$RELEASE\main.exe" `
     -lglfw3 -ldl -lgdi32 -luser32 `
     -mwindows -std=c++17
 
+# Shaders
+Copy-Item "$SRC\3.3.shader.fs" $RELEASE
+Copy-Item "$SRC\3.3.shader.vs" $RELEASE
+
 <#
 # Tests.
 Write-Host "Building tests."
