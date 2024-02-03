@@ -25,15 +25,14 @@ function Compile-Fortesque
         "$GLAD\src\glad.c"
     )
         
+    $compileOptions = "-o $destPath\main.exe "
+    if ($debuggable) {$compileOptions += "-g "}
+
     $includes = "-I$GLAD\include -I$GLFW\include -I$SRC -I$LIB"
     $libraries = "-L$GLFW\lib-mingw-w64 -lglfw3 -ldl -lgdi32 -luser32" 
     $platform = "-mwindows -std=c++17"
 
-    $compileOptions = "-o $destPath\main.exe "
-
-    if ($debuggable) {$compileOptions += "-g "}
     $compileOptions += "$srcFiles $includes $libraries $platform"
-    
     Start-Process g++.exe -ArgumentList $compileOptions -NoNewWindow -Wait
     
     # Shaders
