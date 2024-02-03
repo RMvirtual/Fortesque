@@ -2,6 +2,9 @@
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "stb_image.h"
 
 #include "fortesque.h"
@@ -43,14 +46,14 @@ int main()
         return -1;
     }
 
-    Shader ourShader("texture_shader.vs", "texture_shader.fs"); 
+    Shader ourShader("texture_shader.vs", "texture_shader.fs");
 
     float vertices[] = {
-        // Positions          // Colours           // Texture Coords
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top right
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top left 
+        // positions          // texture coords
+         0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // top right
+         0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // bottom left
+        -0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // top left 
     };
 
     unsigned int indices[] = {  
@@ -59,7 +62,6 @@ int main()
     };
 
     unsigned int VBO, VAO, EBO;
-
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -70,33 +72,21 @@ int main()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    
-    glBufferData(
-        GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // Position attribute.
     glVertexAttribPointer(
-        0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     
     glEnableVertexAttribArray(0);
 
-    // Colour attribute.
+    // Texture coordinate attribute.
     glVertexAttribPointer(
-        1, 3, GL_FLOAT, GL_FALSE,
-        8 * sizeof(float),
+        1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
         (void*)(3 * sizeof(float))
     );
     
     glEnableVertexAttribArray(1);
-
-    // Texture coordinate attribute.
-    glVertexAttribPointer(
-        2, 2, GL_FLOAT, GL_FALSE, 
-        8 * sizeof(float),
-        (void*)(6 * sizeof(float))
-    );
-    
-    glEnableVertexAttribArray(2);
 
     unsigned int texture1, texture2;
 
@@ -164,8 +154,9 @@ int main()
     stbi_image_free(data);
 
     ourShader.use();
+    ourShader.setInt("texture1", 0);
     ourShader.setInt("texture2", 1);
-
+    
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
 
@@ -177,7 +168,18 @@ int main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
+        glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+        transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+
+
         ourShader.use();
+        unsigned int transformLoc = glGetUniformLocation(
+            ourShader.ID, "transform");
+        
+        glUniformMatrix4fv(
+            transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
