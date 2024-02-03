@@ -173,8 +173,8 @@ int main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
-        // Initialised as identity matrix.
-        auto matrix = glm::mat4(1.0f);
+        // 1st container.
+        auto matrix = glm::mat4(1.0f);  // Initalise as identity matrix.
         auto translated = glm::translate(matrix, glm::vec3(0.5f, -0.5f, 0.0f));
 
         auto rotated = glm::rotate(
@@ -189,6 +189,21 @@ int main()
             transformLoc, 1, GL_FALSE, glm::value_ptr(rotated));
 
         glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        // 2nd container.
+        matrix = glm::mat4(1.0f); // reset it to identity matrix
+        translated = glm::translate(matrix, glm::vec3(-0.5f, 0.5f, 0.0f));
+        float scaleAmount = static_cast<float>(sin(glfwGetTime()));
+        
+        auto scaled = glm::scale(
+            translated, glm::vec3(scaleAmount, scaleAmount, scaleAmount));
+        
+        // This time, take the matrix value array's first element as its
+        // memory pointer value.
+        glUniformMatrix4fv(
+            transformLoc, 1, GL_FALSE, &scaled[0][0]);
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
