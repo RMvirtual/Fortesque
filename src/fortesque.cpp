@@ -169,15 +169,11 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texture2);
 
         // Initialised as identity matrix.
-        glm::mat4 identityMatrix = glm::mat4(1.0f);
-        
-        glm::mat4 translatedMatrix = glm::translate(
-            identityMatrix, glm::vec3(0.5f, -0.5f, 0.0f));
+        auto matrix = glm::mat4(1.0f);
+        auto translated = glm::translate(matrix, glm::vec3(0.5f, -0.5f, 0.0f));
 
-        glm::mat4 rotatedMatrix = glm::rotate(
-            translatedMatrix, 
-            (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f)
-        );
+        auto rotated = glm::rotate(
+            translated, (float) glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
         ourShader.use();
         
@@ -185,7 +181,7 @@ int main()
             ourShader.ID, "transform");
         
         glUniformMatrix4fv(
-            transformLoc, 1, GL_FALSE, glm::value_ptr(rotatedMatrix));
+            transformLoc, 1, GL_FALSE, glm::value_ptr(rotated));
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
