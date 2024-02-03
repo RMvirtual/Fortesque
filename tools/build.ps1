@@ -18,7 +18,7 @@ New-Item $RELEASE -ItemType Directory > $null
 $GLAD = "$DEV_LIBS\glad"
 $GLFW = "$DEV_LIBS\glfw"
 
-g++.exe -o "$RELEASE\main.exe" `
+g++.exe -o "$RELEASE\main.exe" -g `
     "$SRC\fortesque.cpp" "$SRC\shader.cpp" "$SRC\stb_image.cpp" `
     "$GLAD\src\glad.c" `
     -I"$GLAD\include" -I"$GLFW\include" -I"$SRC" -I"$LIB" `
