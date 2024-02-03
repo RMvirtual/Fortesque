@@ -12,8 +12,8 @@
 
 
 // Global settings.
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCREEN_WIDTH = 800;
+const unsigned int SCREEN_HEIGHT = 600;
 
 
 int main()
@@ -28,7 +28,7 @@ int main()
 #endif
 
     GLFWwindow* window = glfwCreateWindow(
-        SCR_WIDTH, SCR_HEIGHT, "Fortesque", NULL, NULL);
+        SCREEN_WIDTH, SCREEN_HEIGHT, "Fortesque", NULL, NULL);
     
     if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -46,9 +46,9 @@ int main()
         return -1;
     }
 
-    Shader ourShader("texture_shader.vs", "texture_shader.fs");
+    Shader shader {"texture_shader.vs", "texture_shader.fs"};
 
-    float vertices[] = {
+    float vertices[] {
         // positions          // texture coords
          0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // top right
          0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // bottom right
@@ -56,7 +56,7 @@ int main()
         -0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // top left 
     };
 
-    unsigned int indices[] = {  
+    unsigned int indices[] {  
         0, 1, 3, // First triangle
         1, 2, 3  // Second triangle
     };
@@ -72,7 +72,9 @@ int main()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    
+    glBufferData(
+        GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // Position attribute.
     glVertexAttribPointer(
@@ -158,9 +160,9 @@ int main()
 
     stbi_image_free(data);
 
-    ourShader.use();
-    ourShader.setInt("texture1", 0);
-    ourShader.setInt("texture2", 1);
+    shader.use();
+    shader.setInt("texture1", 0);
+    shader.setInt("texture2", 1);
 
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
@@ -174,16 +176,16 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texture2);
 
         // 1st container.
-        auto matrix = glm::mat4(1.0f);  // Initalise as identity matrix.
+        glm::mat4 matrix {1.0f};  // Initalise as identity matrix.
         auto translated = glm::translate(matrix, glm::vec3(0.5f, -0.5f, 0.0f));
 
         auto rotated = glm::rotate(
             translated, (float) glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
-        ourShader.use();
+        shader.use();
         
         unsigned int transformLoc = glGetUniformLocation(
-            ourShader.ID, "transform");
+            shader.ID, "transform");
         
         glUniformMatrix4fv(
             transformLoc, 1, GL_FALSE, glm::value_ptr(rotated));
@@ -192,18 +194,16 @@ int main()
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // 2nd container.
-        matrix = glm::mat4(1.0f); // reset it to identity matrix
+        matrix = glm::mat4(1.0f);  // Reset to identity matrix.
         translated = glm::translate(matrix, glm::vec3(-0.5f, 0.5f, 0.0f));
         float scaleAmount = static_cast<float>(sin(glfwGetTime()));
-        
+   
         auto scaled = glm::scale(
             translated, glm::vec3(scaleAmount, scaleAmount, scaleAmount));
         
         // This time, take the matrix value array's first element as its
         // memory pointer value.
-        glUniformMatrix4fv(
-            transformLoc, 1, GL_FALSE, &scaled[0][0]);
-
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &scaled[0][0]);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
