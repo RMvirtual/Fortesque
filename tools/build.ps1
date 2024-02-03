@@ -36,8 +36,8 @@ function Compile-Fortesque
     Start-Process g++.exe -ArgumentList $compileOptions -NoNewWindow -Wait
     
     # Shaders
-    Copy-Item "$SRC\3.3.shader.fs" $destPath
-    Copy-Item "$SRC\3.3.shader.vs" $destPath
+    Copy-Item "$SRC\texture_shader.fs" $destPath
+    Copy-Item "$SRC\texture_shader.vs" $destPath
     
     Copy-Item $RESOURCES $destPath -Recurse
 }
@@ -45,7 +45,10 @@ function Compile-Fortesque
 
 if (-Not (Test-Path $BUILD)) {New-Item $BUILD -ItemType Directory > $null}
 
+Write-Host "Compiling Release version."
 Compile-Fortesque $RELEASE
+
+Write-Host "Compiling Debug version."
 Compile-Fortesque $DEBUG -debuggable $true
 
 <#

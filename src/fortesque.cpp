@@ -28,30 +28,26 @@ int main()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    // glfw window creation
-    // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
-    {
+    GLFWwindow* window = glfwCreateWindow(
+        SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    
+    if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
+        
         return -1;
     }
 
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    // glad: load all OpenGL function pointers
-    // ---------------------------------------
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
+        
         return -1;
     }
 
-    // build and compile our shader zprogram
-    // ------------------------------------
-    Shader ourShader("4.1.texture.vs", "4.1.texture.fs"); 
+    Shader ourShader("texture_shader.vs", "texture_shader.fs"); 
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -104,17 +100,16 @@ int main()
     // load image, create texture and generate mipmaps
     int width, height, nrChannels;
 
-    unsigned char *data = stbi_load("resources/container.jpg", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load(
+        "resources/container.jpg", &width, &height, &nrChannels, 0);
     
-    if (data)
-    {
+    if (data) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
+
     else
-    {
         std::cout << "Failed to load texture" << std::endl;
-    }
 
     stbi_image_free(data);
 
