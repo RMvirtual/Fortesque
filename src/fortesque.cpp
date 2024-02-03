@@ -46,16 +46,16 @@ int main()
     Shader ourShader("texture_shader.vs", "texture_shader.fs"); 
 
     float vertices[] = {
-        // positions          // colors           // texture coords
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
+        // Positions          // Colours           // Texture Coords
+         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top right
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top left 
     };
 
     unsigned int indices[] = {  
-        0, 1, 3, // first triangle
-        1, 2, 3  // second triangle
+        0, 1, 3, // First triangle
+        1, 2, 3  // Second triangle
     };
 
     unsigned int VBO, VAO, EBO;
@@ -98,30 +98,30 @@ int main()
     
     glEnableVertexAttribArray(2);
 
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    unsigned int texture1, texture2;
 
-    // Texture wrapping parameters.
+    // Texture 1.
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1); 
+
+     // Set texture wrapping parameters.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    // Texture filtering parameters.
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    // Set texture filtering parameters.
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
-    // Load image, create texture and generate mipmaps
+    // Load image, create texture and generate mipmaps.
     int width, height, nrChannels;
 
-    unsigned char *data = stbi_load(
-        "resources/container.jpg", &width, &height, &nrChannels, 0);
-    
+    // Image axis is upside down.
+    stbi_set_flip_vertically_on_load(true);
+
+    unsigned char *data = stbi_load("resources/container.jpg", &width, &height, &nrChannels, 0);
+
     if (data) {
-        glTexImage2D(
-            GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, 
-            GL_UNSIGNED_BYTE, data
-        );
-        
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
 
@@ -130,13 +130,52 @@ int main()
 
     stbi_image_free(data);
 
+    // Texture 2.
+    glGenTextures(1, &texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+
+    // Set texture wrapping parameters.
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    // Set texture filtering parameters.
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    // Load image, create texture and generate mipmaps.
+    data = stbi_load(
+        "resources/awesomeface.png", &width, &height, &nrChannels, 0);
+    
+    if (data) {
+        // Note that the awesomeface.png has transparency and thus an 
+        // alpha channel, so make sure to tell OpenGL the data type is 
+        // of GL_RGBA.
+        glTexImage2D(
+            GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, 
+            GL_UNSIGNED_BYTE, data
+        );
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    
+    else
+        std::cout << "Failed to load texture" << std::endl;
+
+    stbi_image_free(data);
+
+    ourShader.use();
+    ourShader.setInt("texture2", 1);
+
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
 
         ourShader.use();
         glBindVertexArray(VAO);
@@ -145,7 +184,7 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
+ 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
@@ -155,11 +194,13 @@ int main()
     return 0;
 }
 
+
 void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
