@@ -20,6 +20,17 @@ glm::vec3 cameraPos {0.0f, 0.0f, 3.0f};
 glm::vec3 cameraFront {0.0f, 0.0f, -1.0f};
 glm::vec3 cameraUp {0.0f, 1.0f, 0.0f};
 
+bool firstMouse = true;
+
+// Yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a 
+// direction vector pointing to the right so we initially rotate a bit 
+// to the left.
+float yaw = -90.0f;
+float pitch = 0.0f;
+float lastX = 800.0f / 2.0;
+float lastY = 600.0 / 2.0;
+float fov = 45.0f;
+
 // Timing.
 float deltaTime = 0.0f;  // Time between current frame and last frame.
 float lastFrame = 0.0f;
@@ -48,6 +59,10 @@ int main()
 
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
@@ -103,11 +118,6 @@ int main()
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
-    unsigned int indices[] {  
-        0, 1, 3, // First triangle
-        1, 2, 3  // Second triangle
-    };
-
     // World space positions of cubes to render.
     glm::vec3 cubePositions[] {
         glm::vec3(0.0f, 0.0f, 0.0f), 
@@ -122,24 +132,18 @@ int main()
         glm::vec3(-1.3f, 1.0f, -1.5f)  
     };
 
-    unsigned int VBO, VAO, EBO;
+    unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
 
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    
-    glBufferData(
-        GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
     // Position attribute.
     glVertexAttribPointer(
-        0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);
     
     glEnableVertexAttribArray(0);
 
@@ -157,19 +161,18 @@ int main()
     glGenTextures(1, &texture1);
     glBindTexture(GL_TEXTURE_2D, texture1); 
 
-     // Set texture wrapping parameters.
+     // Texture wrapping parameters.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    // Set texture filtering parameters.
+    // Texture filtering parameters.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
     // Load image, create texture and generate mipmaps.
     int width, height, nrChannels;
 
-    // Image axis is upside down.
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(true);  // Image axis upside down.
 
     unsigned char *data = stbi_load(
         "resources/container.jpg", &width, &height, &nrChannels, 0);
@@ -192,11 +195,11 @@ int main()
     glGenTextures(1, &texture2);
     glBindTexture(GL_TEXTURE_2D, texture2);
 
-    // Set texture wrapping parameters.
+    // Texture wrapping parameters.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    // Set texture filtering parameters.
+    // Texture filtering parameters.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
@@ -225,14 +228,6 @@ int main()
     shader.setInt("texture1", 0);
     shader.setInt("texture2", 1);
 
-    auto projection = glm::perspective(
-        glm::radians(45.0f),
-        (float) SCREEN_WIDTH / (float) SCREEN_HEIGHT,
-        0.1f, 100.0f
-    );
-    
-    shader.setMat4("projection", projection);
-
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
@@ -249,6 +244,14 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texture2);
 
         shader.use();
+
+        glm::mat4 projection = glm::perspective(
+            glm::radians(fov), 
+            (float) SCREEN_WIDTH / (float) SCREEN_HEIGHT,
+            0.1f, 100.0f
+        );
+        
+        shader.setMat4("projection", projection);
 
         glm::mat4 view = glm::lookAt(
             cameraPos, cameraPos + cameraFront, cameraUp);
@@ -275,7 +278,6 @@ int main()
  
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
 
     glfwTerminate();
 
@@ -309,4 +311,51 @@ void processInput(GLFWwindow *window)
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
+}
+
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (firstMouse) {
+        lastX = xpos;
+        lastY = ypos;
+
+        firstMouse = false;
+    }
+  
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos; 
+    lastX = xpos;
+    lastY = ypos;
+
+    float sensitivity = 0.1f;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    yaw   += xoffset;
+    pitch += yoffset;
+
+    if(pitch > 89.0f)
+        pitch = 89.0f;
+
+    if(pitch < -89.0f)
+        pitch = -89.0f;
+
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    direction.y = sin(glm::radians(pitch));
+    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    cameraFront = glm::normalize(direction);
+}
+
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    fov -= (float) yoffset;
+
+    if (fov < 1.0f)
+        fov = 1.0f;
+
+    if (fov > 45.0f)
+        fov = 45.0f;
 }
