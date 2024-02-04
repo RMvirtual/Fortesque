@@ -34,7 +34,7 @@ function Compile-Fortesque
 
     $compileOptions += "$srcFiles $includes $libraries $platform"
     Start-Process g++.exe -ArgumentList $compileOptions -NoNewWindow -Wait
-    
+
     # Shaders
     Copy-Item "$SRC\texture_shader.fs" $destPath
     Copy-Item "$SRC\texture_shader.vs" $destPath
