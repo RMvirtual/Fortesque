@@ -22,9 +22,9 @@ function Compile-Fortesque
        
     $srcFiles = -join(
         "$SRC\fortesque.cpp $SRC\shader.cpp $SRC\stb_image.cpp ",
-        "$GLAD\src\glad.c"
+        "$GLAD\src\glad.c $SRC\camera.cpp"
     )
-        
+    
     $compileOptions = "-o $destPath\main.exe "
     if ($debuggable) {$compileOptions += "-g "}
 
