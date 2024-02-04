@@ -15,6 +15,15 @@
 const unsigned int SCREEN_WIDTH = 800;
 const unsigned int SCREEN_HEIGHT = 600;
 
+// Camera.
+glm::vec3 cameraPos {0.0f, 0.0f, 3.0f};
+glm::vec3 cameraFront {0.0f, 0.0f, -1.0f};
+glm::vec3 cameraUp {0.0f, 1.0f, 0.0f};
+
+// Timing.
+float deltaTime = 0.0f;  // Time between current frame and last frame.
+float lastFrame = 0.0f;
+
 
 int main()
 {
@@ -216,7 +225,19 @@ int main()
     shader.setInt("texture1", 0);
     shader.setInt("texture2", 1);
 
+    auto projection = glm::perspective(
+        glm::radians(45.0f),
+        (float) SCREEN_WIDTH / (float) SCREEN_HEIGHT,
+        0.1f, 100.0f
+    );
+    
+    shader.setMat4("projection", projection);
+
     while (!glfwWindowShouldClose(window)) {
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         processInput(window);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -229,38 +250,22 @@ int main()
 
         shader.use();
 
-        glm::mat4 view {1.0f};
-        glm::mat4 projection {1.0f};
-
-        projection = glm::perspective(
-            glm::radians(45.0f), 
-            (float) SCREEN_WIDTH / (float) SCREEN_HEIGHT, 
-            0.1f,
-            100.0f
-        );
-
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-
-        // Note: currently we set the projection matrix each frame, but 
-        // since the projection matrix rarely changes it's often best 
-        // practice to set it outside the main loop only once.
-        shader.setMat4("projection", projection);
+        glm::mat4 view = glm::lookAt(
+            cameraPos, cameraPos + cameraFront, cameraUp);
+        
         shader.setMat4("view", view);
 
         glBindVertexArray(VAO);
         
         for (unsigned int i=0; i < 10; i++) {
-            glm::mat4 model = glm::mat4(1.0f);
-            auto translated = glm::translate(model, cubePositions[i]);
+            glm::mat4 model = glm::mat4(1.0f);  // Identity matrix.
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
             
-            auto rotated = glm::rotate(
-                translated,
-                (float) glfwGetTime() * glm::radians(50.0f), 
-                glm::vec3(1.0f, 0.3f, 0.5f)
-            );
+            model = glm::rotate(
+                model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
             
-            shader.setMat4("model", rotated);
-
+            shader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
@@ -282,6 +287,22 @@ void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    float cameraSpeed = static_cast<float>(2.5 * deltaTime);
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cameraPos += cameraSpeed * cameraFront;
+
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cameraPos -= cameraSpeed * cameraFront;
+    
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cameraPos -= (
+            glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed);
+    
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cameraPos += (
+            glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed);
 }
 
 
