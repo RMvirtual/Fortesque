@@ -44,14 +44,51 @@ function Compile-TexturesExample
 }
 
 
+function Compile-LightingExample
+{
+    param ([string] $DestFolder, [bool] $Debuggable = $false)
+
+   
+    if (Test-Path $DestFolder) {Remove-Item $DestFolder -Recurse -Force > $null}
+    New-Item $DestFolder -ItemType Directory > $null
+
+    $GLAD = "$DEV_LIBS\glad"
+    $GLFW = "$DEV_LIBS\glfw"
+    
+    $srcFiles = -join(
+        "$SRC\lighting_example\main.cpp $SRC\shader.cpp $SRC\stb_image.cpp ",
+        "$GLAD\src\glad.c $SRC\camera.cpp"
+    )
+    
+    $compileOptions = "-o $DestFolder\main.exe "
+    if ($Debuggable) {$compileOptions += "-g "}
+
+    $includes = "-I$GLAD\include -I$GLFW\include -I$SRC -I$LIB"
+    $libraries = "-L$GLFW\lib-mingw-w64 -lglfw3 -ldl -lgdi32 -luser32" 
+    $platform = "-mwindows -std=c++17"
+
+    $compileOptions += "$srcFiles $includes $libraries $platform"
+    Start-Process g++.exe -ArgumentList $compileOptions -NoNewWindow -Wait
+
+    # Shaders
+    Copy-Item "$SRC\shaders\colour_shader.*" $DestFolder
+    Copy-Item "$SRC\shaders\lighting_shader.*" $DestFolder
+    
+    Copy-Item $RESOURCES $DestFolder -Recurse
+}
+
+
 if (Test-Path $BUILD) {Remove-Item $BUILD -Recurse -Force > $null}
 New-Item $BUILD -ItemType Directory > $null
 
 Write-Host "Compiling Release version."
 Compile-TexturesExample "$RELEASE\textures_example"
+Compile-LightingExample "$RELEASE\lighting_example"
 
 Write-Host "Compiling Debug version."
 Compile-TexturesExample "$DEBUG\textures_example" -Debuggable $true
+Compile-LightingExample "$RELEASE\lighting_example" -Debuggable $true
+
 
 <#
 # Tests.

@@ -7,8 +7,8 @@
 #include "glm/gtc/type_ptr.hpp"
 
 #include "camera.h"
+#include "lighting_example/main.h"
 #include "shader.h"
-
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;

@@ -1,24 +1,20 @@
 [CmdletBinding()]
-param([switch] $debugMode)
+param([switch] $Textures, [switch] $Lighting)
 
 if (-Not $env:DEVENV) {& "$PSScriptRoot\setup.ps1"}
 if (-Not $?) {exit 1}
 
-$TOOLS = "$env:DEVENV\tools"
+$RELEASES = "$env:DEVENV\build\release"
+
+$default = "lighting_example"
+
+if ($Textures) {$program = "textures_example"}
+elseif ($Lighting) {$program = "lighting_example"}
+else {$program = $default}
 
 
-if ($debugMode) {
-    Clear-Host; Write-Host "Debugging application."
-    
-    Push-Location $env:DEVENV
-    Start-Process gdb "$env:DEVENV\build\debug\textures_example\main.exe"
-    Pop-Location
-}
+Clear-Host; Write-Host "Running application."
 
-else {
-    Clear-Host; Write-Host "Running application."
-
-    Push-Location "$env:DEVENV\build\release\textures_example"
-    & "$env:DEVENV\build\release\textures_example\main.exe"
-    Pop-Location
-}
+Push-Location "$RELEASES\$program"
+.\main.exe
+Pop-Location
