@@ -65,7 +65,7 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
-    Shader lightingShader("lighting_shader.vs", "lighting_shader.fs");
+    Shader lightingShader("basic_lighting.vs", "basic_lighting.fs");
     Shader lightCubeShader("light_cube_shader.vs", "light_cube_shader.fs");
 
     float vertices[] = {
@@ -122,8 +122,18 @@ int main()
     glBindVertexArray(cubeVAO);
 
     // Position attribute.
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
+    glVertexAttribPointer(
+        0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) 0);
+    
     glEnableVertexAttribArray(0);
+
+    // Normal attribute.
+    glVertexAttribPointer(
+        1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+        (void*) (3 * sizeof(float))
+    );
+ 
+    glEnableVertexAttribArray(1);
 
     // Configure the light's VAO (VBO stays the same; the vertices are
     // the same for the light object which is also a 3D cube).
@@ -137,7 +147,9 @@ int main()
     // again for educational purposes).
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
+    glVertexAttribPointer(
+        0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*) 0);
+    
     glEnableVertexAttribArray(0);
 
     while (!glfwWindowShouldClose(window)) {
@@ -154,6 +166,7 @@ int main()
         lightingShader.use();
         lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
         lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+        lightingShader.setVec3("lightPos", lightPos);
 
         // View/Projection transformations.
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
