@@ -23,7 +23,7 @@ function Compile-TexturesExample
     
     $srcFiles = -join(
         "$SRC\textures_example\main.cpp $SRC\shader.cpp $SRC\stb_image.cpp ",
-        "$GLAD\src\glad.c $SRC\textures_example\camera.cpp"
+        "$GLAD\src\glad.c $SRC\camera.cpp"
     )
     
     $compileOptions = "-o $DestFolder\main.exe "

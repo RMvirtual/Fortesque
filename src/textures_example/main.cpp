@@ -7,7 +7,7 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "stb_image.h"
 
-#include "textures_example/camera.h"
+#include "camera.h"
 #include "textures_example/main.h"
 #include "shader.h"
 

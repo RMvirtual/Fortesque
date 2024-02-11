@@ -4,7 +4,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "textures_example/camera.h"
+#include "camera.h"
 
 
 Camera::Camera(
