@@ -14,7 +14,6 @@ function Compile-TexturesExample
 {
     param ([string] $DestFolder, [bool] $Debuggable = $false)
 
-   
     if (Test-Path $DestFolder) {Remove-Item $DestFolder -Recurse -Force > $null}
     New-Item $DestFolder -ItemType Directory > $null
 
@@ -36,10 +35,7 @@ function Compile-TexturesExample
     $compileOptions += "$srcFiles $includes $libraries $platform"
     Start-Process g++.exe -ArgumentList $compileOptions -NoNewWindow -Wait
 
-    # Shaders
-    Copy-Item "$SRC\shaders\texture_shader.fs" $DestFolder
-    Copy-Item "$SRC\shaders\texture_shader.vs" $DestFolder
-    
+    Copy-Item "$SRC\shaders\texture_shader.*" $DestFolder
     Copy-Item $RESOURCES $DestFolder -Recurse
 }
 
@@ -47,7 +43,6 @@ function Compile-TexturesExample
 function Compile-LightingExample
 {
     param ([string] $DestFolder, [bool] $Debuggable = $false)
-
    
     if (Test-Path $DestFolder) {Remove-Item $DestFolder -Recurse -Force > $null}
     New-Item $DestFolder -ItemType Directory > $null
@@ -70,7 +65,6 @@ function Compile-LightingExample
     $compileOptions += "$srcFiles $includes $libraries $platform"
     Start-Process g++.exe -ArgumentList $compileOptions -NoNewWindow -Wait
 
-    # Shaders
     Copy-Item "$SRC\shaders\colour_shader.*" $DestFolder
     Copy-Item "$SRC\shaders\lighting_shader.*" $DestFolder
     
