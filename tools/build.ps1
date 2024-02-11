@@ -10,23 +10,24 @@ $RESOURCES = "$env:DEVENV\resources"
 $TEST_SRC = "$env:DEVENV\tests"
 
 
-function Compile-Fortesque
+function Compile-TexturesExample
 {
-    param ([string] $destPath, [bool] $debuggable = $false)
+    param ([string] $DestFolder, [bool] $Debuggable = $false)
 
-    if (Test-Path $destPath) {Remove-Item $destPath -Recurse -Force > $null}
-    New-Item $destPath -ItemType Directory > $null
+   
+    if (Test-Path $DestFolder) {Remove-Item $DestFolder -Recurse -Force > $null}
+    New-Item $DestFolder -ItemType Directory > $null
 
     $GLAD = "$DEV_LIBS\glad"
     $GLFW = "$DEV_LIBS\glfw"
-       
+    
     $srcFiles = -join(
-        "$SRC\fortesque.cpp $SRC\shader.cpp $SRC\stb_image.cpp ",
-        "$GLAD\src\glad.c $SRC\camera.cpp"
+        "$SRC\textures_example\main.cpp $SRC\shader.cpp $SRC\stb_image.cpp ",
+        "$GLAD\src\glad.c $SRC\textures_example\camera.cpp"
     )
     
-    $compileOptions = "-o $destPath\main.exe "
-    if ($debuggable) {$compileOptions += "-g "}
+    $compileOptions = "-o $DestFolder\main.exe "
+    if ($Debuggable) {$compileOptions += "-g "}
 
     $includes = "-I$GLAD\include -I$GLFW\include -I$SRC -I$LIB"
     $libraries = "-L$GLFW\lib-mingw-w64 -lglfw3 -ldl -lgdi32 -luser32" 
@@ -36,20 +37,21 @@ function Compile-Fortesque
     Start-Process g++.exe -ArgumentList $compileOptions -NoNewWindow -Wait
 
     # Shaders
-    Copy-Item "$SRC\texture_shader.fs" $destPath
-    Copy-Item "$SRC\texture_shader.vs" $destPath
+    Copy-Item "$SRC\shaders\texture_shader.fs" $DestFolder
+    Copy-Item "$SRC\shaders\texture_shader.vs" $DestFolder
     
-    Copy-Item $RESOURCES $destPath -Recurse
+    Copy-Item $RESOURCES $DestFolder -Recurse
 }
 
 
-if (-Not (Test-Path $BUILD)) {New-Item $BUILD -ItemType Directory > $null}
+if (Test-Path $BUILD) {Remove-Item $BUILD -Recurse -Force > $null}
+New-Item $BUILD -ItemType Directory > $null
 
 Write-Host "Compiling Release version."
-Compile-Fortesque $RELEASE
+Compile-TexturesExample "$RELEASE\textures_example"
 
 Write-Host "Compiling Debug version."
-Compile-Fortesque $DEBUG -debuggable $true
+Compile-TexturesExample "$DEBUG\textures_example" -Debuggable $true
 
 <#
 # Tests.
