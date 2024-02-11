@@ -66,7 +66,7 @@ function Compile-LightingExample
     Start-Process g++.exe -ArgumentList $compileOptions -NoNewWindow -Wait
 
     Copy-Item "$SRC\shaders\basic_lighting.*" $DestFolder
-    Copy-Item "$SRC\shaders\light_cube_shader.*" $DestFolder
+    Copy-Item "$SRC\shaders\lamp_cube.*" $DestFolder
     
     Copy-Item $RESOURCES $DestFolder -Recurse
 }
