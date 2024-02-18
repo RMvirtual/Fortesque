@@ -81,7 +81,7 @@ Compile-LightingExample "$RELEASE\lighting_example"
 
 Write-Host "Compiling Debug version."
 Compile-TexturesExample "$DEBUG\textures_example" -Debuggable $true
-Compile-LightingExample "$RELEASE\lighting_example" -Debuggable $true
+Compile-LightingExample "$DEBUG\lighting_example" -Debuggable $true
 
 
 <#
