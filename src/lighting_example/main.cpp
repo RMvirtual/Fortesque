@@ -166,9 +166,11 @@ int main()
     glEnableVertexAttribArray(0);
 
     unsigned int diffuseMap = loadTexture("resources/container2.png");
+    unsigned int specularMap = loadTexture("resources/container2_specular.png");
 
     lightingShader.use(); 
     lightingShader.setInt("material.diffuse", 0);
+    lightingShader.setInt("material.specular", 1);
 
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
@@ -188,7 +190,7 @@ int main()
         // Light properties.
         lightingShader.setVec3("light.ambient",  0.2f, 0.2f, 0.2f);
         lightingShader.setVec3("light.diffuse",  0.5f, 0.5f, 0.5f);
-        lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f); 
+        lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
         // Material properties.
         lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
@@ -213,6 +215,10 @@ int main()
         // Bind diffuse-map.
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffuseMap);
+
+        // Bind specular map.
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
 
         // Render cube.
         glBindVertexArray(cubeVAO);
