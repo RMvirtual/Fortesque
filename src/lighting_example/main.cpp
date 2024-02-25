@@ -26,9 +26,6 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-// Lighting
-glm::vec3 lightPos {1.2f, 1.0f, 2.0f};
-
 
 int main()
 {
@@ -200,7 +197,9 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         lightingShader.use();
-        lightingShader.setVec3("light.position", lightPos);
+        lightingShader.setVec3("light.position", camera.Position);
+        lightingShader.setVec3("light.direction", camera.Front);
+        lightingShader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
         lightingShader.setVec3("viewPos", camera.Position);
 
         // Light properties.
@@ -254,6 +253,7 @@ int main()
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
+        /*
         // Lamp.
         lightCubeShader.use();
         lightCubeShader.setMat4("projection", projection);
@@ -265,6 +265,7 @@ int main()
 
         glBindVertexArray(lightCubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
+        */
 
         glfwSwapBuffers(window);
         glfwPollEvents();
