@@ -20,6 +20,9 @@
 		"git.inputValidationLength": 150,
 		"powershell.buttons.showRunButtons": false,
 		"powershell.integratedConsole.showOnStartup": false,
-		"powershell.startAutomatically": false
+		"powershell.startAutomatically": false,
+		"files.associations": {
+			"string": "cpp"
+		}
 	}
 }

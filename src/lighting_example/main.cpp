@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -223,42 +224,19 @@ int main()
         lightingShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
         lightingShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
         
-        // Pointlight 1
-        lightingShader.setVec3("pointLights[0].position", pointLightPositions[0]);
-        lightingShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-        lightingShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
-        lightingShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
-        lightingShader.setFloat("pointLights[0].constant", 1.0f);
-        lightingShader.setFloat("pointLights[0].linear", 0.09f);
-        lightingShader.setFloat("pointLights[0].quadratic", 0.032f);
-        
-        // Pointlight 2
-        lightingShader.setVec3("pointLights[1].position", pointLightPositions[1]);
-        lightingShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-        lightingShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
-        lightingShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
-        lightingShader.setFloat("pointLights[1].constant", 1.0f);
-        lightingShader.setFloat("pointLights[1].linear", 0.09f);
-        lightingShader.setFloat("pointLights[1].quadratic", 0.032f);
-        
-        // Pointlight 3
-        lightingShader.setVec3("pointLights[2].position", pointLightPositions[2]);
-        lightingShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
-        lightingShader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
-        lightingShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
-        lightingShader.setFloat("pointLights[2].constant", 1.0f);
-        lightingShader.setFloat("pointLights[2].linear", 0.09f);
-        lightingShader.setFloat("pointLights[2].quadratic", 0.032f);
-        
-        // Pointlight 4
-        lightingShader.setVec3("pointLights[3].position", pointLightPositions[3]);
-        lightingShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
-        lightingShader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
-        lightingShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
-        lightingShader.setFloat("pointLights[3].constant", 1.0f);
-        lightingShader.setFloat("pointLights[3].linear", 0.09f);
-        lightingShader.setFloat("pointLights[3].quadratic", 0.032f);
-        
+        // Point lights.
+        for (int i = 0; i < 4; i++) {
+            std::string point = "pointLights[" + std::to_string(i) + "]"; 
+
+            lightingShader.setVec3(point + ".position", pointLightPositions[i]);
+            lightingShader.setVec3(point + ".ambient", 0.05f, 0.05f, 0.05f);
+            lightingShader.setVec3(point + ".diffuse", 0.8f, 0.8f, 0.8f);
+            lightingShader.setVec3(point + ".specular", 1.0f, 1.0f, 1.0f);
+            lightingShader.setFloat(point + ".constant", 1.0f);
+            lightingShader.setFloat(point + ".linear", 0.09f);
+            lightingShader.setFloat(point + ".quadratic", 0.032f);
+        }
+
         // Spotlight
         lightingShader.setVec3("spotLight.position", camera.Position);
         lightingShader.setVec3("spotLight.direction", camera.Front);
