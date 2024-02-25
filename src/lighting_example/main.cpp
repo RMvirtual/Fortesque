@@ -66,7 +66,7 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
-    Shader lightingShader("basic_lighting.vs", "basic_lighting.fs");
+    Shader lightingShader("lighting.vs", "lighting.fs");
     Shader lightCubeShader("lamp_cube.vs", "lamp_cube.fs");
 
     float vertices[] = {
