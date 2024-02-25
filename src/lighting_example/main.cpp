@@ -26,6 +26,9 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+// Lighting
+glm::vec3 lightPos {1.2f, 1.0f, 2.0f};
+
 
 int main()
 {
@@ -177,7 +180,9 @@ int main()
     glEnableVertexAttribArray(0);
 
     unsigned int diffuseMap = loadTexture("resources/container2.png");
-    unsigned int specularMap = loadTexture("resources/container2_specular.png");
+    
+    unsigned int specularMap = loadTexture(
+        "resources/container2_specular.png");
 
     lightingShader.use(); 
     lightingShader.setInt("material.diffuse", 0);
@@ -195,17 +200,20 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         lightingShader.use();
-        lightingShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
+        lightingShader.setVec3("light.position", lightPos);
         lightingShader.setVec3("viewPos", camera.Position);
 
         // Light properties.
         lightingShader.setVec3("light.ambient",  0.2f, 0.2f, 0.2f);
         lightingShader.setVec3("light.diffuse",  0.5f, 0.5f, 0.5f);
         lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+        lightingShader.setFloat("light.constant", 1.0f);
+        lightingShader.setFloat("light.linear", 0.09f);
+        lightingShader.setFloat("light.quadratic", 0.032f);
 
         // Material properties.
-        lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-        lightingShader.setFloat("material.shininess", 64.0f);
+        // lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+        lightingShader.setFloat("material.shininess", 32.0f);
         
         // View/Projection transformations.
         glm::mat4 projection = glm::perspective(
@@ -245,6 +253,18 @@ int main()
             lightingShader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
+
+        // Lamp.
+        lightCubeShader.use();
+        lightCubeShader.setMat4("projection", projection);
+        lightCubeShader.setMat4("view", view);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.2f));
+        lightCubeShader.setMat4("model", model);
+
+        glBindVertexArray(lightCubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
