@@ -70,7 +70,7 @@ int main()
     Shader lightCubeShader("lamp_cube.vs", "lamp_cube.fs");
 
     float vertices[] = {
-        // positions          // normals           // texture coords
+        // Positions          // Normals           // Texture coords
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
          0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
          0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
@@ -209,16 +209,13 @@ int main()
         lightingShader.setVec3("viewPos", camera.Position);
         lightingShader.setFloat("material.shininess", 32.0f);
 
-        /*
-        Here we set all the uniforms for the 5/6 types of lights we 
+        /* Here we set all the uniforms for the 5/6 types of lights we 
         have. We have to set them manually and index the proper 
         PointLight struct in the array to set each uniform variable.
         This can be done more code-friendly by defining light types as 
         classes and set their values in there, or by using a more
         efficient uniform approach by using 'Uniform buffer objects', 
-        but that is something we'll discuss in the 'Advanced GLSL' 
-        tutorial.
-        */
+        but that is something more advanced to try later. */
         
         // Directional light
         lightingShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
