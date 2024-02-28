@@ -1,5 +1,10 @@
+# Project-specific
 /build
 /devenv
+
+# Libraries (too large or requiring extensive build processes).
+/lib/cmake*
+/lib/assimp*
 
 # Prerequisites
 *.d
