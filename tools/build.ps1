@@ -17,7 +17,7 @@ function Compile-TexturesExample
     if (Test-Path $DestFolder) {Remove-Item $DestFolder -Recurse -Force > $null}
     New-Item $DestFolder -ItemType Directory > $null
 
-    $GLAD = "$DEV_LIBS\glad"
+    $GLAD = "$LIB\glad"
     $GLFW = "$DEV_LIBS\glfw"
     
     $srcFiles = -join(
@@ -47,7 +47,7 @@ function Compile-LightingExample
     if (Test-Path $DestFolder) {Remove-Item $DestFolder -Recurse -Force > $null}
     New-Item $DestFolder -ItemType Directory > $null
 
-    $GLAD = "$DEV_LIBS\glad"
+    $GLAD = "$LIB\glad"
     $GLFW = "$DEV_LIBS\glfw"
     
     $srcFiles = -join(
