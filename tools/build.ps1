@@ -18,7 +18,7 @@ function Compile-TexturesExample
     New-Item $DestFolder -ItemType Directory > $null
 
     $GLAD = "$LIB\glad"
-    $GLFW = "$DEV_LIBS\glfw"
+    $GLFW = "$LIB\glfw"
     
     $srcFiles = -join(
         "$SRC\textures_example\main.cpp $SRC\shader.cpp $SRC\stb_image.cpp ",
@@ -48,7 +48,7 @@ function Compile-LightingExample
     New-Item $DestFolder -ItemType Directory > $null
 
     $GLAD = "$LIB\glad"
-    $GLFW = "$DEV_LIBS\glfw"
+    $GLFW = "$LIB\glfw"
     
     $srcFiles = -join(
         "$SRC\lighting_example\main.cpp $SRC\shader.cpp $SRC\stb_image.cpp ",

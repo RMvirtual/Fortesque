@@ -1,10 +1,17 @@
-$TARGET = "$env:DEVENV\devenv"
-$ZIP_FILE = "$TARGET\glfw.zip"
+$LIB = "$env:DEVENV\lib"
+$TARGET = "$LIB\glfw"
 
-$version = "glfw-3.3.8.bin.WIN64"
-$url = "https://github.com/glfw/glfw/releases/download/3.3.8/$version.zip"
+$VERSION = "3.3.8"
+$PLATFORM = "bin.WIN64"
+$RELEASE_NAME = "glfw-$VERSION.$PLATFORM"
+$URL = "https://github.com/glfw/glfw/releases/download/$VERSION/$RELEASE_NAME.zip"
 
 
-Invoke-WebRequest -Uri $url -OutFile $ZIP_FILE > $null
-Expand-Archive -Path $ZIP_FILE -DestinationPath $TARGET > $null
-Rename-Item "$TARGET\$version" "$TARGET\glfw" > $null
+if (Test-Path $TARGET) {Remove-Item $TARGET -Recurse -Force > $null}
+
+$zipFile = "$LIB\$RELEASE_NAME.zip"
+
+Invoke-WebRequest -Uri $URL -OutFile $zipFile
+Expand-Archive -Path $zipFile -DestinationPath $LIB
+Remove-Item $zipFile > $null
+Rename-Item "$LIB\$RELEASE_NAME" $TARGET > $null
