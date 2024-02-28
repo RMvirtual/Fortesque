@@ -6,6 +6,7 @@
 /lib/cmake*
 /lib/assimp*
 /lib/glfw*
+/lib/mingw64*
 
 # Prerequisites
 *.d
