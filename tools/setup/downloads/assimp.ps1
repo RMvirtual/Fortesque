@@ -1,4 +1,6 @@
 $LIB = "$env:DEVENV\lib"
+$TARGET = "$env:DEVENV\assimp"
+
 $CMAKE_EXE = "$LIB\cmake\bin\cmake.exe"
 
 $VERSION = "5.3.1"
@@ -34,7 +36,10 @@ function Build-Library
 
 function Install-Library
 {
+    if (Test-Path $TARGET) {Remove-Item $TARGET -Recurse -Force > $null}
 
+    # Need to build/find both Debug and Release version DLLs, as well
+    # as the includes.
 }
 
 # Download-Zip
