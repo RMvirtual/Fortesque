@@ -9,6 +9,11 @@ $DEV_LIBS = "$env:DEVENV\devenv"
 $RESOURCES = "$env:DEVENV\resources"
 $TEST_SRC = "$env:DEVENV\tests"
 
+$GCC_EXE = "$LIB\mingw64\bin\g++.exe"
+
+
+# Need to copy all the DLLs used in the same folder as the g++.exe 
+# compiler
 
 function Compile-TexturesExample
 {
@@ -34,6 +39,7 @@ function Compile-TexturesExample
 
     $compileOptions += "$srcFiles $includes $libraries $platform"
     Start-Process g++.exe -ArgumentList $compileOptions -NoNewWindow -Wait
+    # Start-Process $GCC_EXE -ArgumentList $compileOptions -NoNewWindow -Wait
 
     Copy-Item "$SRC\shaders\texture_shader.*" $DestFolder
     Copy-Item $RESOURCES $DestFolder -Recurse
@@ -64,6 +70,7 @@ function Compile-LightingExample
 
     $compileOptions += "$srcFiles $includes $libraries $platform"
     Start-Process g++.exe -ArgumentList $compileOptions -NoNewWindow -Wait
+    # Start-Process $GCC_EXE -ArgumentList $compileOptions -NoNewWindow -Wait
 
     Copy-Item "$SRC\shaders\lighting.*" $DestFolder
     Copy-Item "$SRC\shaders\lamp_cube.*" $DestFolder
