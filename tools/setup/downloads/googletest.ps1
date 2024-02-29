@@ -14,7 +14,7 @@ if (Test-Path $extractedZip) {
 # Download source code.
 $zipFile = "$LIB\googletest.zip"
 Invoke-WebRequest -Uri $URL -OutFile $zipFile
-Expand-Archive -Path $zipFile -DestinationPath $DEVENV
+Expand-Archive -Path $zipFile -DestinationPath $LIB
 Rename-Item $extractedZip $TARGET > $null
 Remove-Item $zipFile > $null
 

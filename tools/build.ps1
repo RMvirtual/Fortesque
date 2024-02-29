@@ -5,7 +5,6 @@ $TESTS = "$BUILD\tests"
 
 $SRC = "$env:DEVENV\src"
 $LIB = "$env:DEVENV\lib"
-$DEV_LIBS = "$env:DEVENV\devenv"
 $RESOURCES = "$env:DEVENV\resources"
 $TEST_SRC = "$env:DEVENV\tests"
 
@@ -98,7 +97,7 @@ Write-Host "Building tests."
 if (Test-Path $TESTS) {Remove-Item $TESTS -Recurse -Force > $null}
 New-Item $TESTS -ItemType Directory > $null
 
-$GOOGLETEST = "$DEV_LIBS\GOOGLETEST"
+$GOOGLETEST = "$LIB\GOOGLETEST"
 
 $gtestIncludes = "$GOOGLETEST\googletest\include"
 $gtestObject = "$GOOGLETEST\gtest-all.o"

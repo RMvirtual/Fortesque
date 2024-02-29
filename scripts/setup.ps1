@@ -5,10 +5,11 @@ param([switch] $reinstall)
 if (-Not $?) {exit 1}
 
 $SETUP_SCRIPTS = "$env:DEVENV\tools\setup"
-$TARGET = "$env:DEVENV\devenv"
 
 if ($reinstall) {
-    if (Test-Path $TARGET) {Remove-Item $TARGET -Recurse -Force > $null}
+    # Need to determine a setup method for checking all the necessary
+    # lib folder exist now we have gotten rid of /devenv.
+    & "$SETUP_SCRIPTS\configure_libraries.ps1"    
 }
 
 & "$SETUP_SCRIPTS\configure_environment.ps1"
