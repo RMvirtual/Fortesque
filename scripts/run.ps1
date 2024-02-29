@@ -5,16 +5,15 @@ if (-Not $env:DEVENV) {& "$PSScriptRoot\setup.ps1"}
 if (-Not $?) {exit 1}
 
 $RELEASES = "$env:DEVENV\build\release"
+$DEFAULT = "lighting_example"
 
-$default = "lighting_example"
 
 if ($Textures) {$program = "textures_example"}
 elseif ($Lighting) {$program = "lighting_example"}
-else {$program = $default}
-
+else {$program = $DEFAULT}
 
 Clear-Host; Write-Host "Running application."
 
 Push-Location "$RELEASES\$program"
-.\main.exe
+Start-Process ".\main.exe"
 Pop-Location

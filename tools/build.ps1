@@ -33,12 +33,16 @@ function Compile-TexturesExample
     if ($Debuggable) {$compileOptions += "-g "}
 
     $includes = "-I$GLAD\include -I$GLFW\include -I$SRC -I$LIB"
-    $libraries = "-L$GLFW\lib-mingw-w64 -lglfw3 -ldl -lgdi32 -luser32" 
+
+    $libraries = -join(
+        "-L$GLFW\lib-mingw-w64 -lglfw3 -static -ldl -static ",
+        "-lgdi32 -luser32"
+    )
+
     $platform = "-mwindows -std=c++17"
 
     $compileOptions += "$srcFiles $includes $libraries $platform"
-    Start-Process g++.exe -ArgumentList $compileOptions -NoNewWindow -Wait
-    # Start-Process $GCC_EXE -ArgumentList $compileOptions -NoNewWindow -Wait
+    Start-Process $GCC_EXE -ArgumentList $compileOptions -NoNewWindow -Wait
 
     Copy-Item "$SRC\shaders\texture_shader.*" $DestFolder
     Copy-Item $RESOURCES $DestFolder -Recurse
@@ -64,12 +68,16 @@ function Compile-LightingExample
     if ($Debuggable) {$compileOptions += "-g "}
 
     $includes = "-I$GLAD\include -I$GLFW\include -I$SRC -I$LIB"
-    $libraries = "-L$GLFW\lib-mingw-w64 -lglfw3 -ldl -lgdi32 -luser32" 
+
+    $libraries = -join(
+        "-L$GLFW\lib-mingw-w64 -lglfw3 -static -ldl -static ",
+        "-lgdi32 -luser32"
+    )
+
     $platform = "-mwindows -std=c++17"
 
     $compileOptions += "$srcFiles $includes $libraries $platform"
-    Start-Process g++.exe -ArgumentList $compileOptions -NoNewWindow -Wait
-    # Start-Process $GCC_EXE -ArgumentList $compileOptions -NoNewWindow -Wait
+    Start-Process $GCC_EXE -ArgumentList $compileOptions -NoNewWindow -Wait
 
     Copy-Item "$SRC\shaders\lighting.*" $DestFolder
     Copy-Item "$SRC\shaders\lamp_cube.*" $DestFolder
@@ -86,7 +94,7 @@ Compile-TexturesExample "$RELEASE\textures_example"
 Compile-LightingExample "$RELEASE\lighting_example"
 
 Write-Host "Compiling Debug version."
-Compile-TexturesExample "$DEBUG\textures_example" -Debuggable $true
+ Compile-TexturesExample "$DEBUG\textures_example" -Debuggable $true
 Compile-LightingExample "$DEBUG\lighting_example" -Debuggable $true
 
 
